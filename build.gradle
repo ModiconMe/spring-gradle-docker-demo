@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+//    id 'com.bmuschko.docker-remote-api'
+    id 'com.bmuschko.docker-spring-boot-application'
+}
+
+
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
+group 'io.modicon'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
+
+docker {
+    registryCredentials {
+        url = 'https://index.docker.io/v1/'
+        username = 'modiconme'
+        password = 'arcsinwt1'
+        email = 'rebeelsc@gmail.com'
+    }
+}
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+ext {
+    imageName = 'modiconme/hello-app'
+}
+
+//task createDockerfile (type: Dockerfile) {
+//    from('openjdk:17-jdk-alpine')
+//    destFile = project.file('build/Dockerfile')
+//    copyFile("/libs/sbgd.jar", '/app/app.jar')
+//    entryPoint('java')
+//    defaultCommand('-jar', '/app/app.jar')
+//    exposePort(8080)
+//}
+//
+//task buildImage (type: DockerBuildImage) {
+//    dependsOn createDockerfile
+//    inputDir = file('build/')
+//    images.add(imageName)
+//}
+//
+//task pushImage(type: DockerPushImage) {
+//    dependsOn buildImage
+//    images.add(imageName)
+//}
+
+docker {
+    springBootApplication {
+        maintainer = 'smartix'
+        baseImage = 'openjdk:17-alpine'
+        ports = [9090, 8080]
+        images = ['modiconme/hello-app:1', 'modiconme/hello-app:latest']
+        jvmArgs = ['-Dspring.profiles.active=default', '-Xmx2048m']
+    }
+}
+
+build.dependsOn {
+    dockerPushImage
+}

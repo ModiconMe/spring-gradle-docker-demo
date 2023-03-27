@@ -1,0 +1,11 @@
+pluginManagement {
+    plugins {
+        id 'java'
+        id 'org.springframework.boot' version "${springBootVersion}"
+        id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+        id 'com.bmuschko.docker-remote-api' version '9.3.0'
+        id 'com.bmuschko.docker-spring-boot-application' version '9.3.0'
+    }
+}
+
+rootProject.name = 'sbgd'
